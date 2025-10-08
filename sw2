@@ -1,0 +1,114 @@
+
+PART 1 - IPs
+------------------
+
+
+Interface gigabitEthernet 1/0/4
+no switchport
+Ip address 10.0.4.252 255.255.255.0
+ipv6 add 2025:ba1:3000:4::252/64
+ipv6 add fe80::2 link-local 
+No shut 
+exit 
+
+Interface gigabitEthernet 1/0/3
+no switchport
+Ip address 10.0.3.252 255.255.255.0
+Ipv6 address 2025:ba1:3000:3::252/64
+ipv6 add fe80::2 link-local 
+No shut 
+exit
+
+Interface gigabitEthernet 1/0/13
+no switchport
+Ip address 10.0.13.103 255.255.255.0
+Ipv6 address 2025:ba1:3000:13::103/64
+ipv6 add fe80::2 link-local 
+No shut 
+exit
+
+
+PART 2 - OSPF  - Address Families
+---------------------------------
+
+
+2.1 GLOBAL CONFIG
+------
+
+ipv6 unicast-routing
+ip routing
+
+
+router ospfv3 123 
+
+address-family ipv4 unicast
+router-id 10.10.10.20
+  area 0 range 10.0.1.0 255.255.255.0
+  area 1 range 10.0.4.0 255.255.255.0
+  area 1 range 10.0.11.0 255.255.255.0
+  area 1 range 10.0.12.0 255.255.255.0 
+exit-address-family
+
+address-family ipv6 unicast
+router-id 10.10.10.20
+  area 0 range 2025:ba1:3000:1::/64
+  area 0 range 2025:ba1:3000:4::/64
+area 0 range 2025:ba1:3000:11::/64
+  area 0 range 2025:ba1:3000:12::/64  
+exit-address-family
+
+Interface gigabitEthernet 1/0/4
+ospfv3 123 ipv4 area 0
+ospfv3 123 ipv6 area 0
+exit
+
+Interface gigabitEthernet 1/0/3
+ospfv3 123 ipv4 area 2
+ospfv3 123 ipv6 area 2
+exit
+
+Interface gigabitEthernet 1/0/13
+ospfv3 123 ipv4 area 2
+ospfv3 123 ipv6 area 2
+exit
+
+
+
+
+---------------------------------
+
+OSPF  V2 - IPV4
+---------------------------------
+
+router ospf 123
+
+Router-id 10.10.10.20
+
+Network 10.0.4.0 0.0.0.255 area 0
+Network 10.0.3.0 0.0.0.255 area 2
+Network 10.0.13.0 0.0.0.255 area 2 
+
+---------------------------------
+
+OSPF  V3 - IPV6
+---------------------------------
+ipv6 unicast-routing
+ipv6 router ospf 123
+router-id 10.10.10.20
+area 2 range 2025:ba1:3000:4::/64
+area 2 range 2025:ba1:3000:3::/64
+area 2 range 2025:ba1:3000:13::/64
+
+exit
+
+Interface gigabitEthernet 1/0/4
+ipv6 ospf 123 area 0
+exit
+
+Interface gigabitEthernet 1/0/3
+ipv6 ospf 123 area 2
+exit
+
+Interface gigabitEthernet 1/0/13
+ipv6 ospf 123 area 2
+exit
