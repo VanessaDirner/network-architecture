@@ -1,0 +1,73 @@
+OSPF6
+--------------------------------------------
+config router ospf6
+    set router-id 5.5.5.5
+    config area
+        edit 0.0.0.0
+        next 
+    end
+    config ospf6-interface
+        edit "SW1"
+            set interface "internal4"
+        next
+        edit "SW2"
+            set interface "internal5"
+        next        
+    end
+end
+------------------------
+
+OSPF4
+-------------------------------------------
+
+config router ospf
+    set router-id 5.5.5.5
+    config area
+        edit 0.0.0.0
+        next
+    end
+    config ospf-interface
+        edit "sw1"
+            set interface "internal4"
+            set dead-interval 40
+            set hello-interval 10
+        next
+        edit "sw2"
+            set interface "internal5"
+            set dead-interval 40
+            set hello-interval 10
+        next
+    end
+    config network
+        edit 1
+            set prefix 10.0.4.0 255.255.255.0
+        next
+        edit 2
+            set prefix 10.0.1.0 255.255.255.0
+        next
+    end
+    config redistribute "connected"
+set status enable
+    end
+    config redistribute "static"
+    end
+    config redistribute "rip"
+    end
+    config redistribute "bgp"
+    end
+    config redistribute "isis"
+    end
+end
+
+## General verification
+V4
+get router info ospf status
+get router info ospf neighbor
+get router info routing-table all
+
+V6
+show router ospf6
+get router info6 ospf status
+get router info6 routing-table
+
+execute ping ipv6 
