@@ -1,65 +1,33 @@
 
----------------------------------
-PART 1 - IPs
----------------------------------
+ip routing
+ipv6 unicast-routing
 
-Interface gigabitEthernet 1/0/3
-no switchport
-Ip address 10.0.3.253 255.255.255.0
-ipv6 add 2025:ba1:3000:3::253/64
-ipv6 add fe80::3 link-local 
-No shut 
-exit 
 
 Interface gigabitEthernet 1/0/2
 no switchport
 Ip address 10.0.2.253 255.255.255.0
 Ipv6 address 2025:ba1:3000:2::253/64
+ipv6 ospf 123 area 0
 ipv6 add fe80::3 link-local 
 No shut 
 exit
+
+Interface gigabitEthernet 1/0/3
+no switchport
+Ip address 10.0.3.253 255.255.255.0
+ipv6 add 2025:ba1:3000:3::253/64
+ipv6 ospf 123 area 0
+ipv6 add fe80::3 link-local 
+No shut 
+exit 
 
 Interface gigabitEthernet 1/0/14
 no switchport
 Ip address 10.0.14.104 255.255.255.0
 Ipv6 address 2025:ba1:3000:14::104/64
+ipv6 ospf 123 area 3
 ipv6 add fe80::3 link-local 
 No shut 
-exit
-
----------------------------------
-OSPFV3 - Address Families  
----------------------------------
-router ospfv3 123
- router-id 10.10.10.30
- address-family ipv4 unicast
-area 1 range 10.0.2.0 0.0.0.255
-area 2 range 10.0.3.0 0.0.0.255
-area 2 range 10.0.14.0 0.0.0.255
- exit-address-family
- 
- address-family ipv6 unicast
- router-id 10.10.10.30 
-  area 1 range 2025:ba1:3000:2::/64
-  area 2 range 2025:ba1:3000:3::/64
-  area 2 range 2025:ba1:3000:14::/64    
- exit-address-family
- 
-Interface gigabitEthernet 1/0/2
-ospfv3 123 ipv4 area 1
-ospfv3 123 ipv6 area 1
-exit
-
-
-Interface gigabitEthernet 1/0/3
-ospfv3 123 ipv4 area 2
-ospfv3 123 ipv6 area 2
-exit
-
-
-Interface gigabitEthernet 1/0/14
-ospfv3 123 ipv4 area 2
-ospfv3 123 ipv6 area 2
 exit
 
 ---------------------------------
@@ -67,33 +35,16 @@ OSPFV2 - IPV4
 ---------------------------------
 
 Router ospf 123
-ipv4 unicast-routing
-Router-id 10.10.10.30
+Router-id  3.3.3.3
 
-Network 10.0.2.0 0.0.0.255 area 1 
-Network 10.0.3.0 0.0.0.255 area 2
-Network 10.0.14.0 0.0.0.255 area 2 
-
+Network 10.0.2.0 0.0.0.255 area 0
+Network 10.0.3.0  0.0.0.255 area 0
+Network 10.0.14.0 0.0.0.255 area 3
 
 ---------------------------------
 OSPF  V3 - IPV6
 ---------------------------------
-ipv6 unicast-routing
+
 ipv6 router ospf 123
-router-id 10.10.10.30
-area 1 range 2025:ba1:3000:2::/64
-area 2 range 2025:ba1:3000:3::/64
-area 2 range 2025:ba1:3000:14::/64
-exit
-
-Interface gigabitEthernet 1/0/2
-ipv6 ospf 123 area 1
-exit
-
-Interface gigabitEthernet 1/0/3
-ipv6 ospf 123 area 2
-exit
-
-Interface gigabitEthernet 1/0/14
-ipv6 ospf 123 area 2
+router-id  3.3.3.3
 exit
